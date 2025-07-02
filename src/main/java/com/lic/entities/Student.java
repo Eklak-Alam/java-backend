@@ -21,7 +21,7 @@ public class Student {
     private Long id;
 
     @Column(name = "sr_no")
-    private Integer srNo;
+    private String srNo;
 
     @Column(nullable = false)
     private String name;
@@ -43,4 +43,7 @@ public class Student {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
+
+    @Column(name = "last_upload", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean lastUpload;
 }

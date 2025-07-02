@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import com.lic.dto.*;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -53,6 +55,30 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
+
+
+    @PostMapping("/verify-user-credentials")
+    public ResponseEntity<?> verifyUserCredentials(@RequestBody VerifyUserRequest request) {
+        try {
+            User user = userService.findByUsernameAndEmail(request.getUsername(), request.getEmail());
+            return ResponseEntity.ok(new VerificationResponse(true, "User verified successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new VerificationResponse(false, "Invalid username or email"));
+        }
+    }
+
+    @PutMapping("/update-user-password")
+    public ResponseEntity<?> updateUserPassword(@RequestBody UpdatePasswordRequest request) {
+        try {
+            userService.updatePassword(request);
+            return ResponseEntity.ok(new SimpleResponse("Password updated successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new SimpleResponse(e.getMessage()));
+        }
+    }
+
+
 
     // DTO records
     record LoginRequest(String username, String password) {

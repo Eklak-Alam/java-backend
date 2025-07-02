@@ -1,5 +1,6 @@
 package com.lic.service;
 
+import com.lic.dto.UpdatePasswordRequest;
 import com.lic.dto.UserRegistrationDto;
 import com.lic.entities.User;
 import com.lic.repository.UserRepository;
@@ -43,4 +44,19 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+
+    public User findByUsernameAndEmail(String username, String email) {
+        return userRepository.findByUsernameAndEmail(username, email)
+                .orElseThrow(() -> new RuntimeException("User not found with provided credentials"));
+    }
+
+    public void updatePassword(UpdatePasswordRequest request) {
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
 }

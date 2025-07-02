@@ -1,11 +1,13 @@
 package com.lic.repository;
 
+import com.lic.dto.StudentDTO;
 import com.lic.entities.Student;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,20 +24,13 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("SELECT s.panNumber FROM Student s")
     List<String> findAllPanNumbers();
 
-    // Find students by LIC registration number
-    List<Student> findByLicRegdNumber(String licRegdNumber);
+    @Modifying
+    @Query("UPDATE Student s SET s.lastUpload = FALSE WHERE s.lastUpload = TRUE")
+    @Transactional
+        // Add this annotation
+    void resetLastUploadFlag();
 
-    // Find students by branch name
-    List<Student> findByBranch(String branch);
+    @Query("SELECT s FROM Student s WHERE s.lastUpload = TRUE")
+    List<Student> findLastUploadedStudents();
 
-    // Find students by serial number range
-    List<Student> findBySrNoBetween(Integer start, Integer end);
-
-    // Custom query to find students created after a certain date
-    @Query("SELECT s FROM Student s WHERE s.createdAt >= :date")
-    List<Student> findStudentsCreatedAfter(Date date);
-
-    // Count students by branch
-    @Query("SELECT COUNT(s) FROM Student s WHERE s.branch = :branch")
-    Long countByBranch(String branch);
 }

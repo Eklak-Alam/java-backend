@@ -2,10 +2,16 @@ package com.lic.controller;
 
 import com.lic.dto.StudentDTO;
 import com.lic.entities.Student;
+import com.lic.repository.StudentRepository;
 import com.lic.service.StudentService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.stream.Collectors;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/student")
@@ -14,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class StudentController {
 
     private final StudentService studentService;
+    private final StudentRepository studentRepository;
+
 
     @PostMapping("/details")
     public ResponseEntity<StudentDTO> getStudentByPan(@RequestBody PanRequest request) {
@@ -33,5 +41,15 @@ public class StudentController {
         public void setPanNumber(String panNumber) {
             this.panNumber = panNumber;
         }
+    }
+
+
+    @GetMapping("/last-uploaded")
+    public ResponseEntity<List<StudentDTO>> getLastUploadedStudents() {
+        List<Student> students = studentRepository.findLastUploadedStudents();
+        List<StudentDTO> dtos = students.stream()
+                .map(studentService::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 }

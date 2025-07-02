@@ -8,7 +8,7 @@ public class StudentDTO {
 
     @NotNull(message = "Serial number is required")
     @Positive(message = "Serial number must be positive")
-    private Integer srNo;
+    private String srNo;
 
     @NotBlank(message = "Name is required")
     @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
