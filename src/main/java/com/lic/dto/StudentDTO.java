@@ -27,4 +27,6 @@ public class StudentDTO {
 
     @NotBlank(message = "End date is required")
     private String endDate;
+
+    private Boolean lastUpload; // Add this field
 }
