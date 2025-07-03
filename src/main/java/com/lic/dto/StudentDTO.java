@@ -7,7 +7,6 @@ import jakarta.validation.constraints.*;
 public class StudentDTO {
 
     @NotNull(message = "Serial number is required")
-    @Positive(message = "Serial number must be positive")
     private String srNo;
 
     @NotBlank(message = "Name is required")
